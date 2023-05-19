@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
-    password: process.env.DATABSE_PASSWORD,
+    password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE,
 })
 
@@ -212,4 +212,4 @@ app.post('/nthread', (req, res) => {
     }
 })
 
-app.listen(3306, () => console.log('Listening at 3000'));
+app.listen(3000, () => console.log('Listening at 3000'));
