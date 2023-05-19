@@ -212,4 +212,4 @@ app.post('/nthread', (req, res) => {
     }
 })
 
-app.listen(3000, () => console.log('Listening at 3000'));
+app.listen(3306, () => console.log('Listening at 3000'));
