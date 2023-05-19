@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/register.css">
+    <title>Inscription</title>
+</head>
+
+<body>
+    <div class="centre">
+        <h1>Inscription</h1>
+        <form id="register" action="/register" method="POST">
+            <!-- onsubmit="register()" -->
+            <div class="txt nom">
+                <input type="text" name="nom" id='nom' required>
+                <span></span>
+                <label>Pseudo</label>
+            </div>
+            <div class="txt mail">
+                <input type="text" name="mail" id="mail" required>
+                <span></span>
+                <label>Adresse Mail</label>
+            </div>
+            <div class="txt mdp">
+                <input type="password" name="mdp" id="mdp" required>
+                <span></span>
+                <label>Mot de passe</label>
+            </div>
+            <div class="txt confirm">
+                <input type="password" name="confirm" id="confirm" required>
+                <span></span>
+                <label>Confirmer le mot de passe</label>
+            </div>
+            <div class="btn-connex">
+                <input type="submit" id="btn-connex" value="S'inscrire">
+            </div>
+        </form>
+        <div>
+            Déjà inscrit(e)? <a href="login.html">Se connecter</a>
+        </div>
+        <div class="alert succes" id="succes" style="display: none;"></div>
+        <div class="alert erreur" id="erreur" style="display: none;"></div>
+    </div>
+    <script src="javascript/register.js"></script>
+</body>
+
+</html>

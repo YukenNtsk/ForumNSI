@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Connexion</title>
+</head>
+
+<body>
+    <div class="centre">
+        <h1>Connexion</h1>
+        <form action="/login" method="POST" id="login">
+            <div class="txt mail">
+                <input type="text" name="mail" id="mail" required>
+                <span></span>
+                <label>Adresse Mail</label>
+            </div>
+            <div class="txt mdp">
+                <input type="password" name="mdp" id="mdp" required>
+                <span></span>
+                <label>Mot de passe</label>
+            </div>
+            <div class="oublie">
+                <a href="#" id="oublie">Mot de passe oublié</a><br>
+            </div>
+            <div>
+                <input type="checkbox" name="souvenir" id="souvenir">
+                <label for="souvenir">Se souvenir de moi</label>
+            </div>
+            <div class="btn-connex">
+                <input type="submit" id="btn-connex" value="Se connecter">
+            </div>
+        </form>
+        <div>
+            Pas de compte? <a href="register.html">S'inscrire</a>
+        </div>
+        <div class="alert succes" id="succes" style="display: none;"></div>
+        <div class="alert erreur" id="erreur" style="display: none;"></div>
+    </div>
+    <script src="javascript/login.js"></script>
+</body>
+
+</html>

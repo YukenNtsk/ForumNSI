@@ -1,0 +1,112 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Thread</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <nav class="navbar-centre">
+                <a href="index.html">Accueil</a>
+                <a href="forum.html" class="active">Forum</a>
+                <a href="troisieme.html">Troisieme</a>
+            </nav>
+            <nav class="navbar-droite">
+                <button id="modeSombre" onclick="modeSombre()">Mode Sombre</button>
+                <a class="login" href="login.html">Se Connecter</a>
+            </nav>
+        </nav>
+        <input type="checkbox" id="burger-bouton" class="burger-bouton">
+        <nav class="burger">
+            <ul>
+                <li><button id="modeSombre" onclick="modeSombre()">Mode Sombre</button></li>
+                <li><a href="login.html">Se Connecter</a></li>
+            </ul>
+        </nav>
+        <label for="burger-bouton" class="burger-bouton-label">
+            <span>III</span>
+        </label>
+    </header>
+    <div class="main">
+        <div class="header">
+        </div>
+        <textarea name="comment" id="comment" cols="30" rows="2"></textarea>
+        <button id="nouvcomment">Commenter</button>
+        <div class="comments">
+        </div>
+    </div>
+    <script src="javascript/data.js"></script>
+    <script>
+        var id = window.location.search.slice(1);
+        var thread = threads.find(t => t.id == id);
+        var header = document.querySelector('.header');
+        var headerHtml = `
+            <h4 class="titre">
+                ${thread.titre}
+            </h4>
+            <p class="desc">
+                ${thread.desc}
+            </p>
+            <div class="infos">
+                <p class="auteur">
+                    par ${thread.auteur}
+                </p>
+                <p> - </p>
+                <p class="date">
+                    ${new Date(thread.date).toLocaleString()}
+                </p>
+                <p> - </p>
+                <p class="comment-count">
+                    ${thread.comments.length} comments
+                </p>
+            </div>
+        `
+        header.insertAdjacentHTML('beforeend', headerHtml)
+
+        function addComment(comment) {
+            var commentHtml = `
+                <div class="comment">
+                    <div class="top-comment">
+                        <p class="user">
+                            ${comment.auteur}
+                        </p>
+                        <p>-</p>
+                        <p class="comment-ts">
+                            ${new Date(comment.date).toLocaleString()}
+                        </p>
+                    </div>
+                    <div class="comment-contenu">
+                        ${comment.contenu}
+                    </div>
+                </div>
+            `
+            comments.insertAdjacentHTML('beforeend', commentHtml);
+        }
+
+        var comments = document.querySelector('.comments');
+        for (let comment of thread.comments) {
+            addComment(comment);
+        }
+
+        var btn = document.getElementById('nouvcomment')
+        btn.addEventListener('click', function () {
+            var txt = document.getElementById('comment');
+            var comment = {
+                contenu: txt.value,
+                date: Date.now(),
+                auteur: 'Aaron' // TODO Mettre le nom de l'utilisateur
+            }
+            addComment(comment);
+            txt.value = '';
+            thread.comments.push(comment);
+            localStorage.setItem('threads', JSON.stringify(threads));
+        })
+    </script>
+</body>
+
+</html>
