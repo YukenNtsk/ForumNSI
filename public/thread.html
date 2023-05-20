@@ -18,7 +18,8 @@
             </nav>
             <nav class="navbar-droite">
                 <button id="modeSombre" onclick="modeSombre()">Mode Sombre</button>
-                <a class="login" href="login.html">Se Connecter</a>
+                <a id="login-btn" class="login" href="login.html">Se Connecter</a>
+                <a id="compte" href="compte.html" style="display: none;">Mon Compte</a>
             </nav>
         </nav>
         <input type="checkbox" id="burger-bouton" class="burger-bouton">
@@ -41,72 +42,7 @@
         </div>
     </div>
     <script src="javascript/data.js"></script>
-    <script>
-        var id = window.location.search.slice(1);
-        var thread = threads.find(t => t.id == id);
-        var header = document.querySelector('.header');
-        var headerHtml = `
-            <h4 class="titre">
-                ${thread.titre}
-            </h4>
-            <p class="desc">
-                ${thread.desc}
-            </p>
-            <div class="infos">
-                <p class="auteur">
-                    par ${thread.auteur}
-                </p>
-                <p> - </p>
-                <p class="date">
-                    ${new Date(thread.date).toLocaleString()}
-                </p>
-                <p> - </p>
-                <p class="comment-count">
-                    ${thread.comments.length} comments
-                </p>
-            </div>
-        `
-        header.insertAdjacentHTML('beforeend', headerHtml)
-
-        function addComment(comment) {
-            var commentHtml = `
-                <div class="comment">
-                    <div class="top-comment">
-                        <p class="user">
-                            ${comment.auteur}
-                        </p>
-                        <p>-</p>
-                        <p class="comment-ts">
-                            ${new Date(comment.date).toLocaleString()}
-                        </p>
-                    </div>
-                    <div class="comment-contenu">
-                        ${comment.contenu}
-                    </div>
-                </div>
-            `
-            comments.insertAdjacentHTML('beforeend', commentHtml);
-        }
-
-        var comments = document.querySelector('.comments');
-        for (let comment of thread.comments) {
-            addComment(comment);
-        }
-
-        var btn = document.getElementById('nouvcomment')
-        btn.addEventListener('click', function () {
-            var txt = document.getElementById('comment');
-            var comment = {
-                contenu: txt.value,
-                date: Date.now(),
-                auteur: 'Aaron' // TODO Mettre le nom de l'utilisateur
-            }
-            addComment(comment);
-            txt.value = '';
-            thread.comments.push(comment);
-            localStorage.setItem('threads', JSON.stringify(threads));
-        })
-    </script>
+    <script src="javascript/thread.js"></script>
 </body>
 
 </html>

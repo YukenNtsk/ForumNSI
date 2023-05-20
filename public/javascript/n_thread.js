@@ -5,10 +5,10 @@ form.addEventListener('submit', (event) => {
 
     console.log('yess')
 
-    const formData = new FormData(form)
+    const formData = new FormData(form) // Récupère les données inscrites dans le form
     var bodyString = JSON.stringify(Object.fromEntries(formData))
     var bodyObject = JSON.parse(bodyString)
-    bodyObject.accessToken = localStorage.getItem('accessToken')
+    bodyObject.accessToken = localStorage.getItem('accessToken') // Ajoute le token de l'utilisateur aux données envoyées dans le form
     var body = JSON.stringify(bodyObject)
     console.log(body)
 
@@ -18,14 +18,13 @@ form.addEventListener('submit', (event) => {
             'Content-Type': 'application/json'
         },
         body: body
-    })
-        .then(response => response.json())
+    }) // Envoie les données au backend
+        .then(response => response.json()) // reçois les données du backend
         .then(data => {
             if(data.status == "erreur"){
                 console.log('erreur')
             } else {
-                console.log('yeyeye')
-                window.location.replace(`thread.html?${data.id}`)
+                window.location.replace(`thread.html?${data.id}`) // Dirige vers le post créé
             }
         })
         .catch(error => {

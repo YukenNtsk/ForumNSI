@@ -122,6 +122,22 @@ header {
     background-color: #005eec;
 }
 
+#compte {
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    background-color: #1eb31e;
+    border-radius: 100px;
+    padding: 0.5em;
+    transition: all 300ms ease;
+    height: 1.25rem;
+}
+
+#compte:hover,
+#compte:focus {
+    background-color: #2a922a;
+}
+
 .burger {
     /* top: 42px;
     margin-left: calc(84vw); */
