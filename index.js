@@ -263,7 +263,7 @@ app.post('/gen_thread', (req, res) => {
                         </p>
                     </div>
                     <div class="comment-contenu">
-                        ${comment.contenu}
+                        ${comment.contenu.replace('\n', '<br>')}
                     </div>
                 </div>
             `
@@ -281,11 +281,10 @@ app.post('/nouv_comment', (req, res) => {
     var auteur = ''
     jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
-            // handle error
             console.log(err)
         } else {
             auteur = user.nom
-            let sql = 'SELECT comment FROM posts WHERE id = ?'
+            let sql = 'SELECT * FROM posts WHERE id = ?'
             let query = db.query(sql, [req.body.id], (err, result) => {
                 if (err) {
                     throw err
@@ -300,11 +299,32 @@ app.post('/nouv_comment', (req, res) => {
                     s_comments = JSON.stringify(comments)
 
                     let sqll = 'UPDATE posts SET comment = ? WHERE id = ?'
-                    let queryy = db.query(sqll, [s_comments, req.body.id], (err, result) => {
-                        if (err) {
+                    let queryy = db.query(sqll, [s_comments, req.body.id], (errr, resultt) => {
+                        if (errr) {
                             console.log('err')
                         } else {
-                            console.log(result)
+                            const transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                    user: 'forumnsi@gmail.com',
+                                    pass: process.env.MDP_MAIL
+                                }
+                            })
+                            const mailOptions = {
+                                from: 'forumnsi@gmail.com',
+                                to: result[0].mail,
+                                subject: `Nouveau Commentaire sur ${result[0].titre}`,
+                                text: `${user.nom} a commenté:\n ${req.body.contenu}`
+                            }
+                            transporter.sendMail(mailOptions, (error, info) => {
+                                if (err) {
+                                    console.log('Erreur Mail')
+                                }
+                                else {
+                                    console.log('Mail envoyé')
+                                }
+                            })
+                            console.log(resultt)
                             res.json({status: 'succes'})
                         }
                     })
