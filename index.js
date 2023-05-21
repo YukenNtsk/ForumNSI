@@ -1,10 +1,10 @@
 // Equivalent de "import express as express" en javascript
 const express = require('express');
-const mysql = require('mysql');
-const dotenv = require('dotenv').config();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer')
+const mysql = require('mysql'); // database
+const dotenv = require('dotenv').config(); // Permet la lecture du fichier .env contenant des informations secrètes non visibles à l'utilisateur
+const bcrypt = require('bcryptjs'); // Permet le cryptage des mots de passes
+const jwt = require('jsonwebtoken'); // Permet la création de token
+const nodemailer = require('nodemailer') // Permet l'envoi de mails
 
 
 const app = express();
@@ -194,6 +194,7 @@ app.post('/nthread', (req, res) => {
     })
 })
 
+// Affichage des threads
 app.post('/create_thread', (req, res) => {
     let sql = 'SELECT * FROM posts';
     let query = db.query(sql, (err, result) => {
@@ -233,7 +234,7 @@ app.post('/gen_thread', (req, res) => {
                 ${result[0].titre}
             </h4>
             <p class="desc">
-                ${result[0].contenu}
+                ${result[0].contenu.replace('\n', '<br>')}
             </p>
             <div class="infos">
                 <p class="auteur">
