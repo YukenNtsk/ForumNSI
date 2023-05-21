@@ -19,9 +19,11 @@ body {
     background-color: var(--couleur-principale);
     color: var(--couleur-oppose-principale);
     font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
 }
 
 header {
+    z-index: 3;
     position: fixed;
     font-family: 'Montserrat', sans-serif;
 }
@@ -234,15 +236,75 @@ header {
 .main h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 2rem;
+
 }
 
 .main h2 {
+    position: relative;
     font-family: 'Montserrat', sans-serif;
     font-size: 5rem;
     text-align: center;
-    margin-top: 100px;
+    padding: 0;
+    margin: 0;
 }
 
+.main h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3rem;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+/* 
+.debut div {
+    z-index: ;
+} */
+
+.svg-bg {
+    /* aspect-ratio: 16/9; */
+    position: fixed;
+    height: 130vh;
+    overflow-y: hidden;
+}
+
+.svg-bas {
+    position: relative;
+    bottom: -50%;
+    left: 0;
+    /* top:100%; */
+    width: 100vw;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.svg-bas svg {
+    position: relative;
+    display: block;
+    width: calc(107% + 1.3px);
+    height: 111px;
+    transform: rotateY(180deg);
+}
+
+.svg-bas .forme {
+    fill: #3476E9;
+}
+
+.sec3 {
+    position: relative;
+    width: 100vw;
+    left: -50px;
+    top: 130px;
+    background-color: #3476E9;
+}
 
 
 /* Page Thread  */
@@ -384,6 +446,7 @@ header {
 .main {
     margin-top: 50px;
     padding: 10px 40px;
+    /* padding: 0; */
 }
 
 
@@ -436,4 +499,47 @@ header {
     padding: 20px;
     margin-top: 10px;
     border-radius: 10px;
+}
+
+/* Feedback */
+.centre {
+    text-align: center;
+}
+
+.feedback-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#titre-fb {
+    width: 30rem;
+}
+
+#msg {
+    width: 30rem;
+    height: 20rem;
+}
+
+.alert {
+    margin-top: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    position: relative;
+    padding: 1rem 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+.succes {
+    color: #111111;
+    border-color: #6e857b;
+    background-color: #67d8a5;
+}
+
+.erreur {
+    color: #111111;
+    border-color: #644242;
+    background-color: hsl(0, 48%, 62%);
 }

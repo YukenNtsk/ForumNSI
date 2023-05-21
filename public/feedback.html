@@ -14,7 +14,7 @@
             <nav class="navbar-centre">
                 <a href="index.html">Accueil</a>
                 <a href="forum.html">Forum</a>
-                <a href="troisieme.html" class="active">Troisieme</a>
+                <a href="feedback.html" class="active">Feedback</a>
             </nav>
             <nav class="navbar-droite">
                 <button id="modeSombre" onclick="modeSombre()">Mode Sombre</button>
@@ -34,9 +34,27 @@
         </label>
     </header>
     <div class="main">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In odit omnis quas quidem id a. Repellendus magnam, odio at repellat consequatur sit omnis delectus modi aspernatur ratione aut dolorem. Dolorem in praesentium amet nam repellat vitae, harum iusto nisi officia excepturi perspiciatis eos reiciendis rerum cupiditate. Voluptatem, cum tempora. Hic.</p>
+        <div>
+            <h1 class="centre">Un problème avec le site?</h1>
+            <p class="centre">Contactez-moi en remplissant le formulaire ci-dessous</p>
+        </div>
+        <div class="connecté">
+            <form action="/feedback" method="post" class="feedback-form" id="feedback-form">
+                <div>
+                    <input type="text" name="titre" id="titre-fb" placeholder="Expliquez brièvement le problème" required>
+                </div>
+                <div>
+                    <textarea name="msg" id="msg" rows="10" placeholder="Expliquez plus en détails"></textarea>
+                </div>
+                <div>
+                    <button type="submit">Envoyer</button>
+                </div>
+                <div class="alert succes" id="succes" style="display: none;"></div>
+                <div class="alert erreur" id="erreur" style="display: none;"></div>
+            </form>
+        </div>
     </div>
 </body>
 <script src="javascript/data.js"></script>
-
+<script src="javascript/feedback.js"></script>
 </html>

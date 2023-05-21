@@ -79,26 +79,6 @@ function create_threads() {
         var container = document.getElementById('threads')
         container.insertAdjacentHTML('beforeend', data.html);
     })
-    // console.log(threads);
-    // for (let thread of threads) {
-    //     var html = `
-    //     <div class="row">
-    //         <a href="thread.html?${thread.id}">
-    //             <h4 class="title">
-    //                 ${thread.titre}
-    //             </h4>
-    //             <div class="bottom">
-    //                 <p class="date">
-    //                     ${new Date(thread.date).toLocaleString()}
-    //                 </p>
-    //                 <p class="ncomment">
-    //                     ${thread.comments.length} commentaires
-    //                 </p>
-    //             </div>
-    //         </a>
-    //     </div>
-    //     `
-    // }
 }
 
 // Mode sombre / Mode clair sur une nouvelle page

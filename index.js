@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const dotenv = require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer')
 
 
 const app = express();
@@ -196,9 +197,7 @@ app.post('/nthread', (req, res) => {
 app.post('/create_thread', (req, res) => {
     let sql = 'SELECT * FROM posts';
     let query = db.query(sql, (err, result) => {
-        console.log(result);
         var html = '';
-        console.log(result[0]);
         for (let i = 9; i >= 0; i--) {
             if (result[i] != undefined) {                
                 html = html + `
@@ -218,9 +217,7 @@ app.post('/create_thread', (req, res) => {
                     </a>
                 </div>
                 `
-                console.log(html)
             }
-            console.log(i)
         }
         var data = {html: html}
         res.json(data)
@@ -278,40 +275,6 @@ app.post('/gen_thread', (req, res) => {
     })
 })
 
-// app.post('/nouv_comment', (req, res) => {
-//     var s_comments = []
-//     var auteur = ''
-//     jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => { // Vérifie les informations du token
-//         auteur = user.nom
-//         console.log('1')
-//     })
-
-//     let sql = 'SELECT comment FROM posts WHERE id = ?'
-//     let query = db.query(sql, [req.body.id], (err, result) => {
-//         console.log('2')
-//         var comments = JSON.parse(result[0].comment)
-//         console.log('3')
-//         var comment = {
-//             contenu: req.body.contenu,
-//             date: Date.now(),
-//             auteur: auteur
-//         }
-//         comments.push(comment)
-//         s_comments = JSON.stringify(comments)
-//     })
-
-//     console.log(s_comments)
-//     console.log('4')
-//     let sqll = 'UPDATE users SET comment = ? WHERE id = ?'
-//     console.log(sqll)
-//     console.log('5')
-//     let queryy = db.query(sqll, [s_comments, req.body.id], (err, result) => {
-//         console.log(s_comments)
-//         console.log('6')
-//         console.log(result)
-//     })
-// })
-
 app.post('/nouv_comment', (req, res) => {
     var s_comments = []
     var auteur = ''
@@ -348,6 +311,48 @@ app.post('/nouv_comment', (req, res) => {
             })  
         }
     })
+})
+
+app.post('/feedback', (req, res) => {
+    if (req.body.accessToken == null) {
+        var data = {
+            status: 'erreur',
+            erreur: 'Vous devez vous connecter.'
+        }
+        res.json(data)
+    } else {
+        jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) throw err
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'forumnsi@gmail.com',
+                    pass: process.env.MDP_MAIL
+                }
+            })
+            const mailOptions = {
+                from: user.mail,
+                to: 'forumnsi@gmail.com',
+                subject: `Feedback: ${req.body.titre}`,
+                text: `${req.body.msg}\n de ${user.nom} - ${user.mail}`
+            }
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Une erreur s\'est produite'
+                    }
+                    res.json(data)
+                } else {
+                    var data = {
+                        status: 'succes',
+                        succes: 'Email envoyé!'
+                    }
+                    res.json(data)
+                }
+            })
+        })
+    }
 })
 
 app.listen(3000, () => console.log('Lancé sur le port 3000'));
