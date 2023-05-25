@@ -13,7 +13,7 @@
             <nav class="navbar-centre">
                 <a href="index.html">Accueil</a>
                 <a href="forum.html">Forum</a>
-                <a href="troisieme.html">Troisieme</a>
+                <a href="feedback.html">Feedback</a>
             </nav>
             <nav class="navbar-droite">
                 <button id="modeSombre" onclick="modeSombre()">Mode Sombre</button>
@@ -21,19 +21,38 @@
                 <a id="compte" href="compte.html" style="display: none;">Mon Compte</a>
             </nav>
         </nav>
-        <input type="checkbox" id="burger-bouton" class="burger-bouton">
-        <nav class="burger">
-            <ul>
-                <li><button id="modeSombre" onclick="modeSombre()">Mode Sombre</button></li>
-                <li><a href="login.html">Se Connecter</a></li>
-            </ul>
-        </nav>
-        <label for="burger-bouton" class="burger-bouton-label">
-            <span>III</span>
-        </label>
     </header>
     <div class="main">
+        <h1 class="centre">Mon Compte</h1>
+        <div class="tout" id="tout">
+
+        </div>
+        <div id="modifnom" style="display: none;">
+            <form action="/modifnom" method="post" class="modifnom" id="modifnomform">
+                <input type="text" name="modifnom" id="modifnomtxt" placeholder="Nouveau Nom" required>
+                <input type="password" name="mdp" id="mdp" placeholder="Mot de Passe" required>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </div>
+        <div id="modifmail" style="display: none;">
+            <form action="/modifmail" method="post" class="modifmail" id="modifmailform">
+                <input type="text" name="modifmail" id="modifmailtxt" placeholder="Nouveau E-mail" required>
+                <input type="password" name="mdp" id="mdp" placeholder="Mot de Passe" required>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </div>
+        <div id="modifmdp" style="display: none;">
+            <form action="/modifmdp" method="post" class="modifmdp" id="modifmdpform">
+                <input type="password" name="mdp" id="mdp" placeholder="Ancien Mot de Passe" required>
+                <input type="password" name="modifmdp" id="modifmdptxt" placeholder="Nouveau Mot de Passe" required>
+                <input type="password" name="modifmdpconfirm" id="modifmdpconfirm" placeholder="Confirmer le Mot de Passe" required>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </div>
+        <div class="alert succes" id="succes" style="display: none;"></div>
+        <div class="alert erreur" id="erreur" style="display: none;"></div>
     </div>
     <script src="javascript/data.js"></script>
+    <script src="javascript/compte.js"></script>
 </body>
 </html>

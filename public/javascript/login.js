@@ -6,7 +6,6 @@ form.addEventListener('submit', (event) => {
 
     const formData = new FormData(form) // Récupère les données inscrites dans le form
 
-    console.log('aaaaa')
     fetch("/login", {
         method: 'POST',
         headers: {

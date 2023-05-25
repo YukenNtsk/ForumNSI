@@ -18,29 +18,6 @@ fetch('/gen_thread', {
 })
 
 
-// function addComment(comment) {
-//     var commentHtml = `
-//         <div class="comment">
-//             <div class="top-comment">
-//                 <p class="user">
-//                     ${comment.auteur}
-//                 </p>
-//                 <p>-</p>
-//                 <p class="comment-ts">
-//                     ${new Date(comment.date).toLocaleString()}
-//                 </p>
-//             </div>
-//             <div class="comment-contenu">
-//                 ${comment.contenu}
-//             </div>
-//         </div>
-//     `
-// }
-
-// for (let comment of thread.comments) {
-//     addComment(comment);
-// }
-
 var btn = document.getElementById('nouvcomment')
 btn.addEventListener('click', function () {
     var id = window.location.search.slice(1);
@@ -60,15 +37,4 @@ btn.addEventListener('click', function () {
         .then(data => {
             window.location.reload()
     })
-
-    // var txt = document.getElementById('comment');
-    // var comment = {
-    //     contenu: txt.value,
-    //     date: Date.now(),
-    //     auteur: 'Aaron' // TODO Mettre le nom de l'utilisateur
-    // }
-    // addComment(comment);
-    // txt.value = '';
-    // thread.comments.push(comment);
-    // localStorage.setItem('threads', JSON.stringify(threads));
 })

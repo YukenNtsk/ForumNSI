@@ -29,6 +29,8 @@ db.connect((err) => {
     console.log("database connectée")
 })
 
+
+
 // Creation de la database
 // app.get('/createdb', (req, res) => {
 //     let sql = 'CREATE DATABASE forumdb';
@@ -59,6 +61,9 @@ db.connect((err) => {
 //     })
 // })
 
+
+
+
 // Pas besoin de .html à la fin de l'url
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html')
@@ -78,6 +83,14 @@ app.get('/forum', (req, res) => {
 
 app.get('/thread', (req, res) => {
     res.sendFile(__dirname + '/public/thread.html');
+})
+
+app.get('/compte', (req, res) => {
+    res.sendFile(__dirname + '/public/compte.html')
+})
+
+app.get('/feedback', (req, res) => {
+    res.sendFile(__dirname + '/public/feedback.html')
 })
 
 
@@ -152,7 +165,8 @@ app.post('/login', (req, res) => {
         else {
             const user = {
                 nom: result[0].nom,
-                mail: req.body.mail
+                mail: req.body.mail,
+                id: result[0].id
             }
             console.log(user)
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET) // Créé un token d'utilisateur
@@ -234,7 +248,7 @@ app.post('/gen_thread', (req, res) => {
                 ${result[0].titre}
             </h4>
             <p class="desc">
-                ${result[0].contenu.replace('\n', '<br>')}
+                ${result[0].contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
             </p>
             <div class="infos">
                 <p class="auteur">
@@ -263,7 +277,7 @@ app.post('/gen_thread', (req, res) => {
                         </p>
                     </div>
                     <div class="comment-contenu">
-                        ${comment.contenu.replace('\n', '<br>')}
+                        ${comment.contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
                     </div>
                 </div>
             `
@@ -370,6 +384,189 @@ app.post('/feedback', (req, res) => {
                         succes: 'Email envoyé!'
                     }
                     res.json(data)
+                }
+            })
+        })
+    }
+})
+
+app.post('/compte', (req, res) => {
+    if (req.body.accessToken == null) {
+        var data = {
+            status: 'erreur',
+            erreur: 'Vous devez vous connecter'
+        }
+        res.json(data)
+    } else {
+        jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) throw err
+            var data = {
+                status: 'succes',
+                nom: user.nom,
+                mail: user.mail
+            }
+            res.json(data)
+        })
+    }
+})
+
+app.post('/modifnom', (req, res) => {
+    if (req.body.accessToken == null) {
+        var data = {
+            status: 'erreur',
+            erreur: 'Vous devez vous connecter.'
+        }
+        res.json(data)
+    } else {
+        jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) throw err
+            let sql = 'SELECT * FROM users WHERE email = ?'
+            let query = db.query(sql, [user.mail], async (err, result) => {
+                if (!await bcrypt.compare(req.body.mdp, result[0].mdp)) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Mot de passe incorrect'
+                    }
+                    res.json(data)
+                } else if (result[0].nom == req.body.modifnom) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Ceci est déjà votre nom.'
+                    }
+                    res.json(data)
+                } else {
+                    let sqll = 'UPDATE users SET nom = ? WHERE email = ?'
+                    let queryy = db.query(sqll, [req.body.modifnom, user.mail], (errr, resultt) => {
+                        if (errr) throw errr
+                        console.log(resultt)
+                        const user = {
+                            nom: req.body.modifnom,
+                            mail: result[0].mail,
+                            id: result[0].id
+                        }
+                        console.log(user)
+                        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET) // Créé un token d'utilisateur
+                        var data = {
+                            status: 'succes',
+                            succes: 'Votre nom a été modifié',
+                            accessToken: accessToken
+                        }
+                        res.json(data)
+                    })
+                }
+            })
+        })
+    }
+})
+
+app.post('/modifmail', (req, res) => {
+    if (req.body.accessToken == null) {
+        var data = {
+            status: 'erreur',
+            erreur: 'Vous devez vous connecter.'
+        }
+        res.json(data)
+    } else {
+        jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) throw err
+            let sql = 'SELECT * FROM users WHERE email = ?'
+            let query = db.query(sql, [user.mail], async (err, result) => {
+                if (!await bcrypt.compare(req.body.mdp, result[0].mdp)) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Mot de passe incorrect'
+                    }
+                    res.json(data)
+                } else if (result[0].mail == req.body.modifmail) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Ceci est déjà votre mail.'
+                    }
+                    res.json(data)
+                } else {
+                    db.query('SELECT email FROM users WHERE email = ?', [req.body.modifmail], async (errrr, resulttt) => { // Vérifie si l'adresse mail écrit est déjà utilisé dans la database
+                        if (err) throw err;
+                        if (resulttt[0]) {
+                            var data = {
+                                status: 'erreur',
+                                erreur: 'Cet email est déjà utilisé.'
+                            }
+                            res.json(data);
+                        } else {
+                            let sqll = 'UPDATE users SET email = ? WHERE email = ?'
+                            let queryy = db.query(sqll, [req.body.modifmail, user.mail], (errr, resultt) => {
+                                if (errr) throw errr
+                                console.log(resultt)
+                                const user = {
+                                    nom: result[0].nom,
+                                    mail: req.body.modifmail,
+                                    id: result[0].id
+                                }
+                                console.log(user)
+                                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET) // Créé un token d'utilisateur
+                                var data = {
+                                    status: 'succes',
+                                    succes: 'Votre mail a été modifié',
+                                    accessToken: accessToken
+                                }
+                                res.json(data)
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    }
+})
+
+app.post('/modifmdp', (req, res) => {
+    if (req.body.accessToken == null) {
+        var data = {
+            status: 'erreur',
+            erreur: 'Vous devez vous connecter.'
+        }
+        res.json(data)
+    } else {
+        jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) throw err
+            let sql = 'SELECT * FROM users WHERE email = ?'
+            let query = db.query(sql, [user.mail], async (err, result) => {
+                if (!await bcrypt.compare(req.body.mdp, result[0].mdp)) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Mot de passe incorrect'
+                    }
+                    res.json(data)
+                } else if (await bcrypt.compare(req.body.modifmdp, result[0].mdp)) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Ceci est déjà votre mot de passe.'
+                    }
+                    res.json(data)
+                } else if (req.body.modifmdp != req.body.modifmdpconfirm) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Veuillez entrer le même mot de passe 2 fois.'
+                    }
+                    res.json(data)
+                } else if (req.body.modifmdp.length < 8) {
+                    var data = {
+                        status: 'erreur',
+                        erreur: 'Le mot de passe doit contenir au moins 8 caractères.'
+                    }
+                    res.json(data)
+                } else {
+                    const mdphash = await bcrypt.hash(req.body.modifmdp, 8)
+                    let sqll = 'UPDATE users SET mdp = ? WHERE email = ?'
+                    let queryy = db.query(sqll, [mdphash, user.mail], (errr, resultt) => {
+                        if (errr) throw errr
+                        console.log(resultt)
+                        var data = {
+                            status: 'succes',
+                            succes: 'Votre mot de passe a été modifié',
+                        }
+                        res.json(data)
+                    })
                 }
             })
         })
