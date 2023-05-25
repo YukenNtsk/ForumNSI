@@ -11,6 +11,13 @@
     --couleur-quaternaire: #282828;
 }
 
+html, body {
+    overflow-x: hidden;
+  }
+  body {
+    position: relative
+  }
+
 html {
     scroll-behavior: smooth;
 }
@@ -21,7 +28,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     overflow-x: hidden;
     width: 100%;
-    position: relative;
 }
 
 header {
