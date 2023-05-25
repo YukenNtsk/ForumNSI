@@ -441,7 +441,7 @@ app.post('/modifnom', (req, res) => {
                         console.log(resultt)
                         const user = {
                             nom: req.body.modifnom,
-                            mail: result[0].mail,
+                            mail: result[0].email,
                             id: result[0].id
                         }
                         console.log(user)
