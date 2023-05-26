@@ -52,14 +52,14 @@ db.connect((err) => {
 // })
 
 // Creation de la table posts
-app.get('/createtableposts', (req, res) => {
-    let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, titre VARCHAR(255), auteur VARCHAR(255), contenu TEXT, date TEXT, comment JSON, PRIMARY KEY(id))';
-    db.query(sql, (err, results) => {
-        if (err) throw err;
-        console.log(results);
-        res.send('Table posts créée')
-    })
-})
+// app.get('/createtableposts', (req, res) => {
+//     let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, titre VARCHAR(255), auteur VARCHAR(255), contenu TEXT, date TEXT, comment JSON, PRIMARY KEY(id))';
+//     db.query(sql, (err, results) => {
+//         if (err) throw err;
+//         console.log(results);
+//         res.send('Table posts créée')
+//     })
+// })
 
 
 
@@ -190,7 +190,6 @@ app.post('/nthread', (req, res) => {
             date: Date.now().toString(),
             comment: '[]'
         }
-        console.log(Date.now().toString())
         let sql = 'INSERT INTO posts SET ?';
         let query = db.query(sql, post, (err, result) => { // Insère les informations du post dans la database
             if (err) throw err;
@@ -213,15 +212,10 @@ app.post('/create_thread', (req, res) => {
         } else {
             var html = '';
             for (let i = 10; i >= -1; i--) {
-                console.log(i)
                 if (result[i] != undefined) {
-                    // console.log(result[i]) 
-                    // console.log(result[i].auteur)
                     let sqll = 'SELECT * FROM users WHERE id = ?'            
                     let queryy = db.query(sqll, [parseInt(result[i].auteur)], (errr, resultt) => {
                         if (errr) throw errr
-                        // console.log(resultt)
-                        console.log(i)
                         html = html + `
                         <div class="row">
                             <a href="thread.html?${result[i].id}">
@@ -240,8 +234,6 @@ app.post('/create_thread', (req, res) => {
                         </div>
                         `
                         if (i == 0) {
-                            console.log(html)
-                            console.log('a')
                             var data = {html: html}
                             res.json(data)
                         }
@@ -281,29 +273,45 @@ app.post('/gen_thread', (req, res) => {
                     </p>
                 </div>
             `
-            for (const comment of JSON.parse(result[0].comment)) {
-                commentHtml = commentHtml + `
-                    <div class="comment">
-                        <div class="top-comment">
-                            <p class="user">
-                                ${comment.auteur}
-                            </p>
-                            <p>-</p>
-                            <p class="comment-ts">
-                                ${new Date(comment.date).toLocaleString()}
-                            </p>
-                        </div>
-                        <div class="comment-contenu">
-                            ${comment.contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
-                        </div>
-                    </div>
-                `
+            if (result[0].comment == '[]' || JSON.parse(result[0].comment) == undefined) {
+                var data = {
+                    headerHtml: headerHtml,
+                    commentHtml: ''
+                }
+                res.json(data)
+            } else {
+                for (const comment of JSON.parse(result[0].comment)) {
+                    var listComment = JSON.parse(result[0].comment)
+                    let sqlll = 'SELECT * FROM users WHERE id = ?'
+                    let queryyy = db.query(sqlll, [comment.auteur], (errrr, resulttt) => {
+                        if (errrr) throw errrr
+                        console.log(resulttt)
+                        commentHtml = commentHtml + `
+                            <div class="comment">
+                                <div class="top-comment">
+                                    <p class="user">
+                                        ${resulttt[0].nom}
+                                    </p>
+                                    <p>-</p>
+                                    <p class="comment-ts">
+                                        ${new Date(comment.date).toLocaleString()}
+                                    </p>
+                                </div>
+                                <div class="comment-contenu">
+                                    ${comment.contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
+                                </div>
+                            </div>
+                        `
+                        if (comment.date == listComment[listComment.length - 1].date && comment.auteur == listComment[listComment.length - 1].auteur) {
+                            var data = {
+                                headerHtml: headerHtml,
+                                commentHtml: commentHtml
+                            }
+                            res.json(data)
+                        }
+                    })
+                }
             }
-            var data = {
-                headerHtml: headerHtml,
-                commentHtml: commentHtml
-            }
-            res.json(data)
         })
     })
 })
@@ -466,11 +474,9 @@ app.post('/modifnom', (req, res) => {
                     let sqll = 'UPDATE users SET nom = ? WHERE id = ?'
                     let queryy = db.query(sqll, [req.body.modifnom, user.id], (errr, resultt) => {
                         if (errr) throw errr
-                        console.log(resultt)
                         const user = {
                             id: result[0].id
                         }
-                        console.log(user)
                         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET) // Créé un token d'utilisateur
                         var data = {
                             status: 'succes',
@@ -522,11 +528,9 @@ app.post('/modifmail', (req, res) => {
                             let sqll = 'UPDATE users SET email = ? WHERE id = ?'
                             let queryy = db.query(sqll, [req.body.modifmail, user.id], (errr, resultt) => {
                                 if (errr) throw errr
-                                console.log(resultt)
                                 const user = {
                                     id: result[0].id
                                 }
-                                console.log(user)
                                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET) // Créé un token d'utilisateur
                                 var data = {
                                     status: 'succes',

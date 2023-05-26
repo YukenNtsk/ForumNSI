@@ -13,6 +13,8 @@ function create_threads() {
     })
 }
 
+
+
 // Mode sombre / Mode clair sur une nouvelle page
 var root = document.querySelector(':root');
 
