@@ -319,6 +319,9 @@ app.post('/gen_thread', (req, res) => {
 app.post('/nouv_comment', (req, res) => {
     var s_comments = []
     var auteur = ''
+    if (req.body.accessToken == null || req.body.accessToken == undefined) {
+        res.sendFile(__dirname + '/public/login.html');        
+    }
     jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
             console.log(err)
@@ -333,7 +336,7 @@ app.post('/nouv_comment', (req, res) => {
                     var comment = {
                         contenu: req.body.contenu,
                         date: Date.now(),
-                        auteur: auteur
+                        auteur: user.id
                     }
                     comments.push(comment)
                     s_comments = JSON.stringify(comments)
