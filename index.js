@@ -52,14 +52,14 @@ db.connect((err) => {
 // })
 
 // Creation de la table posts
-// app.get('/createtableposts', (req, res) => {
-//     let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, titre VARCHAR(255), auteur VARCHAR(255), mail VARCHAR(255), contenu TEXT, date TEXT, comment JSON, PRIMARY KEY(id))';
-//     db.query(sql, (err, results) => {
-//         if (err) throw err;
-//         console.log(results);
-//         res.send('Table posts créée')
-//     })
-// })
+app.get('/createtableposts', (req, res) => {
+    let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, titre VARCHAR(255), auteur VARCHAR(255), contenu TEXT, date TEXT, comment JSON, PRIMARY KEY(id))';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        res.send('Table posts créée')
+    })
+})
 
 
 
@@ -164,8 +164,6 @@ app.post('/login', (req, res) => {
         }
         else {
             const user = {
-                nom: result[0].nom,
-                mail: req.body.mail,
                 id: result[0].id
             }
             console.log(user)
@@ -184,12 +182,10 @@ app.post('/login', (req, res) => {
 app.post('/nthread', (req, res) => {
     jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => { // Vérifie les informations du token
         if (err) throw err
-        let auteur = user.nom // Récupère le nom de l'utilisateur à partir du token
-        let mail = user.mail // Récupère le mail
+        let auteur = user.id // Récupère le nom de l'utilisateur à partir du token
         let post = {
             titre: req.body.titre, // Titre écrit dans le form
             auteur: auteur,
-            mail: mail,
             contenu: req.body.desc,
             date: Date.now().toString(),
             comment: '[]'
@@ -212,30 +208,47 @@ app.post('/nthread', (req, res) => {
 app.post('/create_thread', (req, res) => {
     let sql = 'SELECT * FROM posts';
     let query = db.query(sql, (err, result) => {
-        var html = '';
-        for (let i = 9; i >= 0; i--) {
-            if (result[i] != undefined) {                
-                html = html + `
-                <div class="row">
-                    <a href="thread.html?${result[i].id}">
-                        <h4 class="title">
-                            ${result[i].titre}
-                        </h4>
-                        <div class="bottom">
-                            <p class="date">
-                                ${new Date(parseInt(result[i].date)).toLocaleString()}
-                            </p>
-                            <p class="ncomment">
-                                ${JSON.parse(result[i].comment).length} commentaires
-                            </p>
+        if (err) {
+            throw err
+        } else {
+            var html = '';
+            for (let i = 10; i >= -1; i--) {
+                console.log(i)
+                if (result[i] != undefined) {
+                    // console.log(result[i]) 
+                    // console.log(result[i].auteur)
+                    let sqll = 'SELECT * FROM users WHERE id = ?'            
+                    let queryy = db.query(sqll, [parseInt(result[i].auteur)], (errr, resultt) => {
+                        if (errr) throw errr
+                        // console.log(resultt)
+                        console.log(i)
+                        html = html + `
+                        <div class="row">
+                            <a href="thread.html?${result[i].id}">
+                                <h4 class="title">
+                                    ${result[i].titre}
+                                </h4>
+                                <div class="bottom">
+                                    <p class="date">
+                                        ${resultt[0].nom} - ${new Date(parseInt(result[i].date)).toLocaleString()}
+                                    </p>
+                                    <p class="ncomment">
+                                        ${JSON.parse(result[i].comment).length} commentaires
+                                    </p>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                </div>
-                `
+                        `
+                        if (i == 0) {
+                            console.log(html)
+                            console.log('a')
+                            var data = {html: html}
+                            res.json(data)
+                        }
+                    })
+                }
             }
         }
-        var data = {html: html}
-        res.json(data)
     })
 })
 
@@ -243,50 +256,55 @@ app.post('/gen_thread', (req, res) => {
     var commentHtml = ''
     let sql = 'SELECT * FROM posts WHERE id = ?'
     let query = db.query(sql, [req.body.id], (err, result) => {
-        let headerHtml = `
-            <h4 class="titre">
-                ${result[0].titre}
-            </h4>
-            <p class="desc">
-                ${result[0].contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
-            </p>
-            <div class="infos">
-                <p class="auteur">
-                    par ${result[0].auteur}
+        if (err) throw err
+        let sqll = 'SELECT * FROM users WHERE id = ?'
+        let queryy = db.query(sqll, [result[0].auteur], (errr, resultt) => {
+            if (errr) throw errr
+            let headerHtml = `
+                <h4 class="titre">
+                    ${result[0].titre}
+                </h4>
+                <p class="desc">
+                    ${result[0].contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
                 </p>
-                <p> - </p>
-                <p class="date">
-                    ${new Date(parseInt(result[0].date)).toLocaleString()}
-                </p>
-                <p> - </p>
-                <p class="comment-count">
-                    ${JSON.parse(result[0].comment).length} comments
-                </p>
-            </div>
-        `
-        for (const comment of JSON.parse(result[0].comment)) {
-            commentHtml = commentHtml + `
-                <div class="comment">
-                    <div class="top-comment">
-                        <p class="user">
-                            ${comment.auteur}
-                        </p>
-                        <p>-</p>
-                        <p class="comment-ts">
-                            ${new Date(comment.date).toLocaleString()}
-                        </p>
-                    </div>
-                    <div class="comment-contenu">
-                        ${comment.contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
-                    </div>
+                <div class="infos">
+                    <p class="auteur">
+                        par ${resultt[0].nom}
+                    </p>
+                    <p> - </p>
+                    <p class="date">
+                        ${new Date(parseInt(result[0].date)).toLocaleString()}
+                    </p>
+                    <p> - </p>
+                    <p class="comment-count">
+                        ${JSON.parse(result[0].comment).length} comments
+                    </p>
                 </div>
             `
-        }
-        var data = {
-            headerHtml: headerHtml,
-            commentHtml: commentHtml
-        }
-        res.json(data)
+            for (const comment of JSON.parse(result[0].comment)) {
+                commentHtml = commentHtml + `
+                    <div class="comment">
+                        <div class="top-comment">
+                            <p class="user">
+                                ${comment.auteur}
+                            </p>
+                            <p>-</p>
+                            <p class="comment-ts">
+                                ${new Date(comment.date).toLocaleString()}
+                            </p>
+                        </div>
+                        <div class="comment-contenu">
+                            ${comment.contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
+                        </div>
+                    </div>
+                `
+            }
+            var data = {
+                headerHtml: headerHtml,
+                commentHtml: commentHtml
+            }
+            res.json(data)
+        })
     })
 })
 
@@ -297,7 +315,7 @@ app.post('/nouv_comment', (req, res) => {
         if (err) {
             console.log(err)
         } else {
-            auteur = user.nom
+            auteur = user.id
             let sql = 'SELECT * FROM posts WHERE id = ?'
             let query = db.query(sql, [req.body.id], (err, result) => {
                 if (err) {
@@ -313,33 +331,36 @@ app.post('/nouv_comment', (req, res) => {
                     s_comments = JSON.stringify(comments)
 
                     let sqll = 'UPDATE posts SET comment = ? WHERE id = ?'
-                    let queryy = db.query(sqll, [s_comments, req.body.id], (errr, resultt) => {
-                        if (errr) {
+                    let queryy = db.query(sqll, [s_comments, req.body.id], (err, resultt) => {
+                        if (err) {
                             console.log('err')
                         } else {
-                            const transporter = nodemailer.createTransport({
-                                service: 'gmail',
-                                auth: {
-                                    user: 'forumnsi@gmail.com',
-                                    pass: process.env.MDP_MAIL
+                            let sqlll = 'SELECT * FROM users WHERE id = ?'
+                            let queryyy = db.query(sqlll, [auteur], (errr, resulttt) => {
+                                const transporter = nodemailer.createTransport({
+                                    service: 'gmail',
+                                    auth: {
+                                        user: 'forumnsi@gmail.com',
+                                        pass: process.env.MDP_MAIL
+                                    }
+                                })
+                                const mailOptions = {
+                                    from: 'forumnsi@gmail.com',
+                                    to: resulttt[0].mail,
+                                    subject: `Nouveau Commentaire sur ${result[0].titre}`,
+                                    text: `${resulttt[0].nom} a commenté:\n ${req.body.contenu}`
                                 }
+                                transporter.sendMail(mailOptions, (error, info) => {
+                                    if (err) {
+                                        console.log('Erreur Mail')
+                                    }
+                                    else {
+                                        console.log('Mail envoyé')
+                                    }
+                                })
+                                console.log(resultt)
+                                res.json({status: 'succes'})
                             })
-                            const mailOptions = {
-                                from: 'forumnsi@gmail.com',
-                                to: result[0].mail,
-                                subject: `Nouveau Commentaire sur ${result[0].titre}`,
-                                text: `${user.nom} a commenté:\n ${req.body.contenu}`
-                            }
-                            transporter.sendMail(mailOptions, (error, info) => {
-                                if (err) {
-                                    console.log('Erreur Mail')
-                                }
-                                else {
-                                    console.log('Mail envoyé')
-                                }
-                            })
-                            console.log(resultt)
-                            res.json({status: 'succes'})
                         }
                     })
                 }
@@ -358,33 +379,36 @@ app.post('/feedback', (req, res) => {
     } else {
         jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) throw err
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: 'forumnsi@gmail.com',
-                    pass: process.env.MDP_MAIL
-                }
-            })
-            const mailOptions = {
-                from: user.mail,
-                to: 'forumnsi@gmail.com',
-                subject: `Feedback: ${req.body.titre}`,
-                text: `${req.body.msg}\n de ${user.nom} - ${user.mail}`
-            }
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    var data = {
-                        status: 'erreur',
-                        erreur: 'Une erreur s\'est produite'
+            let sql = 'SELECT * FROM users WHERE id = ?'
+            let query = db.query(sql, [user.id], (err, result) => {
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'forumnsi@gmail.com',
+                        pass: process.env.MDP_MAIL
                     }
-                    res.json(data)
-                } else {
-                    var data = {
-                        status: 'succes',
-                        succes: 'Email envoyé!'
-                    }
-                    res.json(data)
+                })
+                const mailOptions = {
+                    from: result[0].mail,
+                    to: 'forumnsi@gmail.com',
+                    subject: `Feedback: ${req.body.titre}`,
+                    text: `${req.body.msg}\n de ${result[0].nom} - ${result[0].mail}`
                 }
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        var data = {
+                            status: 'erreur',
+                            erreur: 'Une erreur s\'est produite'
+                        }
+                        res.json(data)
+                    } else {
+                        var data = {
+                            status: 'succes',
+                            succes: 'Email envoyé!'
+                        }
+                        res.json(data)
+                    }
+                })
             })
         })
     }
@@ -400,12 +424,16 @@ app.post('/compte', (req, res) => {
     } else {
         jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) throw err
-            var data = {
-                status: 'succes',
-                nom: user.nom,
-                mail: user.mail
-            }
-            res.json(data)
+            let sql = 'SELECT * FROM users WHERE id = ?'
+            let query = db.query(sql, [user.id], (err, result) => {
+                if (err) throw err
+                var data = {
+                    status: 'succes',
+                    nom: result[0].nom,
+                    mail: result[0].email
+                }
+                res.json(data)
+            })
         })
     }
 })
@@ -420,8 +448,8 @@ app.post('/modifnom', (req, res) => {
     } else {
         jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) throw err
-            let sql = 'SELECT * FROM users WHERE email = ?'
-            let query = db.query(sql, [user.mail], async (err, result) => {
+            let sql = 'SELECT * FROM users WHERE id = ?'
+            let query = db.query(sql, [user.id], async (err, result) => {
                 if (!await bcrypt.compare(req.body.mdp, result[0].mdp)) {
                     var data = {
                         status: 'erreur',
@@ -435,13 +463,11 @@ app.post('/modifnom', (req, res) => {
                     }
                     res.json(data)
                 } else {
-                    let sqll = 'UPDATE users SET nom = ? WHERE email = ?'
-                    let queryy = db.query(sqll, [req.body.modifnom, user.mail], (errr, resultt) => {
+                    let sqll = 'UPDATE users SET nom = ? WHERE id = ?'
+                    let queryy = db.query(sqll, [req.body.modifnom, user.id], (errr, resultt) => {
                         if (errr) throw errr
                         console.log(resultt)
                         const user = {
-                            nom: req.body.modifnom,
-                            mail: result[0].email,
                             id: result[0].id
                         }
                         console.log(user)
@@ -469,8 +495,8 @@ app.post('/modifmail', (req, res) => {
     } else {
         jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) throw err
-            let sql = 'SELECT * FROM users WHERE email = ?'
-            let query = db.query(sql, [user.mail], async (err, result) => {
+            let sql = 'SELECT * FROM users WHERE id = ?'
+            let query = db.query(sql, [user.id], async (err, result) => {
                 if (!await bcrypt.compare(req.body.mdp, result[0].mdp)) {
                     var data = {
                         status: 'erreur',
@@ -493,13 +519,11 @@ app.post('/modifmail', (req, res) => {
                             }
                             res.json(data);
                         } else {
-                            let sqll = 'UPDATE users SET email = ? WHERE email = ?'
-                            let queryy = db.query(sqll, [req.body.modifmail, user.mail], (errr, resultt) => {
+                            let sqll = 'UPDATE users SET email = ? WHERE id = ?'
+                            let queryy = db.query(sqll, [req.body.modifmail, user.id], (errr, resultt) => {
                                 if (errr) throw errr
                                 console.log(resultt)
                                 const user = {
-                                    nom: result[0].nom,
-                                    mail: req.body.modifmail,
                                     id: result[0].id
                                 }
                                 console.log(user)
@@ -529,8 +553,8 @@ app.post('/modifmdp', (req, res) => {
     } else {
         jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) throw err
-            let sql = 'SELECT * FROM users WHERE email = ?'
-            let query = db.query(sql, [user.mail], async (err, result) => {
+            let sql = 'SELECT * FROM users WHERE id = ?'
+            let query = db.query(sql, [user.id], async (err, result) => {
                 if (!await bcrypt.compare(req.body.mdp, result[0].mdp)) {
                     var data = {
                         status: 'erreur',
@@ -557,8 +581,8 @@ app.post('/modifmdp', (req, res) => {
                     res.json(data)
                 } else {
                     const mdphash = await bcrypt.hash(req.body.modifmdp, 8)
-                    let sqll = 'UPDATE users SET mdp = ? WHERE email = ?'
-                    let queryy = db.query(sqll, [mdphash, user.mail], (errr, resultt) => {
+                    let sqll = 'UPDATE users SET mdp = ? WHERE id = ?'
+                    let queryy = db.query(sqll, [mdphash, user.id], (errr, resultt) => {
                         if (errr) throw errr
                         console.log(resultt)
                         var data = {

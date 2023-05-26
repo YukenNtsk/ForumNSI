@@ -208,6 +208,7 @@ section {
     overflow: hidden;
     line-height: 0;
     transform: rotate(180deg);
+    overflow-y: hidden;
 }
 
 .svg-bas svg {
@@ -225,9 +226,11 @@ section {
 .sec3 {
     position: relative;
     width: 100vw;
+    height: 100vh;
     left: -50px;
     top: 130px;
     background-color: #3476E9;
+    overflow: hidden;
 }
 
 
@@ -524,7 +527,7 @@ section {
 }
 
 #deco {
-    background-color: transparent;
+    background-color: #3c3c3c;
     border: #ff0000 solid 3px;
 }
 
