@@ -12,6 +12,9 @@ fetch("/compte", {
     .then(response => response.json()) // reçois les données du backend
     .then(data => {
         if (data.status == 'erreur') {
+            if (data.erreur == 'Mauvais Token') {
+                localstorage.removeItem('accessToken')
+            }
             window.location.replace('/login')
         } else {
             var html = `
