@@ -141,7 +141,6 @@ app.post('/register', async (req, res) => {
                         succes: 'Compte créé'
                     }
                     res.json(data);
-                    res.redirect('/login')
                 })
             }
         }
