@@ -324,6 +324,8 @@ app.post('/nouv_comment', (req, res) => {
     jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
             console.log(err)
+        } else if (user.id == null || user.id == undefined) {
+            res.sendFile(__dirname + '/public/login.html')
         } else {
             auteur = user.id
             let sql = 'SELECT * FROM posts WHERE id = ?'
@@ -434,16 +436,24 @@ app.post('/compte', (req, res) => {
     } else {
         jwt.verify(req.body.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) throw err
-            let sql = 'SELECT * FROM users WHERE id = ?'
-            let query = db.query(sql, [user.id], (err, result) => {
-                if (err) throw err
+            if (user.id == undefined || user.id == null) {
                 var data = {
-                    status: 'succes',
-                    nom: result[0].nom,
-                    mail: result[0].email
+                    status: 'erreur',
+                    erreur: 'Mauvais Token'
                 }
                 res.json(data)
-            })
+            } else {
+                let sql = 'SELECT * FROM users WHERE id = ?'
+                let query = db.query(sql, [user.id], (err, result) => {
+                    if (err) throw err
+                    var data = {
+                        status: 'succes',
+                        nom: result[0].nom,
+                        mail: result[0].email
+                    }
+                    res.json(data)
+                })
+            }
         })
     }
 })
