@@ -20,23 +20,27 @@ fetch('/gen_thread', {
 
 var btn = document.getElementById('nouvcomment')
 btn.addEventListener('click', function () {
-    var id = window.location.search.slice(1);
-    var body = {
-        accessToken: localStorage.getItem('accessToken'),
-        contenu: document.getElementById('comment').value,
-        id: id
+    if (document.getElementById('comment').value === null || document.getElementById('comment').value === undefined) {
+        return
+    } else {
+        var id = window.location.search.slice(1);
+        var body = {
+            accessToken: localStorage.getItem('accessToken'),
+            contenu: document.getElementById('comment').value,
+            id: id
+        }
+        fetch('/nouv_comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }) // Envoie les données au backend
+            .then(response => response.json()) // reçois les données du backend
+            .then(data => {
+                window.location.reload()
+        })
     }
-    fetch('/nouv_comment', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    }) // Envoie les données au backend
-        .then(response => response.json()) // reçois les données du backend
-        .then(data => {
-            window.location.reload()
-    })
 })
 
 
