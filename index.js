@@ -299,6 +299,11 @@ app.post('/gen_thread', (req, res) => {
                                 <div class="comment-contenu">
                                     ${comment.contenu.replace(/(\r\n|\r|\n)/g, '<br>')}
                                 </div>
+                                <div class="comment-bouton">
+                                    <button style="font-size:18px"><i class="fa-solid fa-reply" style="color:lime"></i></button>
+                                    <button style="font-size:18px"><i class="fa-regular fa-pen-to-square" style="color:yellow"></i></button>
+                                    <button style="font-size:18px"><i class="fa-regular fa-trash-can" style="color:red"></i></button>
+                                </div>
                             </div>
                         `
                         if (comment.date == listComment[listComment.length - 1].date && comment.auteur == listComment[listComment.length - 1].auteur) {
@@ -345,7 +350,7 @@ app.post('/nouv_comment', (req, res) => {
                     let sqll = 'UPDATE posts SET comment = ? WHERE id = ?'
                     let queryy = db.query(sqll, [s_comments, req.body.id], (err, resultt) => {
                         if (err) {
-                            console.log('err')
+                            console.log(err)
                         } else {
                             let sqlll = 'SELECT * FROM users WHERE id = ?'
                             let queryyy = db.query(sqlll, [auteur], (errr, resulttt) => {
@@ -404,7 +409,7 @@ app.post('/feedback', (req, res) => {
                     from: result[0].mail,
                     to: 'forumnsi@gmail.com',
                     subject: `Feedback: ${req.body.titre}`,
-                    text: `${req.body.msg}\n de ${result[0].nom} - ${result[0].mail}`
+                    text: `${req.body.msg}\n de ${result[0].nom} - ${result[0].email}`
                 }
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {

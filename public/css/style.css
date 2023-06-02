@@ -307,10 +307,32 @@ section {
 }
 
 .comment {
+    display: flex;
+    flex-direction: column;
     background-color: var(--couleur-quaternaire);
     padding: 15px;
     margin-top: 5px;
     border-radius: 10px;
+}
+
+.comment-bouton {
+    display: none;
+    position: absolute;
+    right: 5%;
+    margin-top: -0.5%;
+}
+
+.comment-bouton button {
+    background-color: var(--couleur-secondaire);
+}
+
+.comment-bouton button:hover,
+.comment-bouton button:focus {
+    background-color: var(--couleur-principale);
+}
+
+.comment:hover .comment-bouton {
+    display: flex;
 }
 
 .top-comment {
