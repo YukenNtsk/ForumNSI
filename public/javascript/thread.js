@@ -38,3 +38,16 @@ btn.addEventListener('click', function () {
             window.location.reload()
     })
 })
+
+
+
+tinymce.init({
+    selector: "#comment",
+    plugins: "emoticons autoresize",
+    toolbar: "emoticons",
+    toolbar_location: "bottom",
+    menubar: false,
+    statusbar: false
+  });
+  
+  
