@@ -48,6 +48,6 @@ tinymce.init({
     toolbar_location: "bottom",
     menubar: false,
     statusbar: false
-  });
+});
   
   
