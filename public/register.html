@@ -12,35 +12,66 @@
 <body>
     <div class="centre">
         <h1>Inscription</h1>
-        <form id="register" action="/register" method="POST">
-            <!-- onsubmit="register()" -->
-            <div class="txt nom">
-                <input type="text" name="nom" id='nom' required>
-                <span></span>
-                <label>Pseudo</label>
+        <div id="partie1">
+            <form id="register" action="/register" method="POST">
+                <!-- onsubmit="register()" -->
+                <div class="txt nom">
+                    <input type="text" name="nom" id='nom' required>
+                    <span></span>
+                    <label>Pseudo</label>
+                </div>
+                <div class="txt mail">
+                    <input type="text" name="mail" id="mail" required>
+                    <span></span>
+                    <label>Adresse Mail</label>
+                </div>
+                <div class="txt mdp">
+                    <input type="password" name="mdp" id="mdp" required>
+                    <span></span>
+                    <label>Mot de passe</label>
+                </div>
+                <div class="txt confirm">
+                    <input type="password" name="confirm" id="confirm" required>
+                    <span></span>
+                    <label>Confirmer le mot de passe</label>
+                </div>
+                <div class="btn-connex">
+                    <input type="submit" id="btn-connex" value="S'inscrire">
+                </div>
+            </form>
+            <div>
+                Déjà inscrit(e)? <a href="login.html">Se connecter</a>
             </div>
-            <div class="txt mail">
-                <input type="text" name="mail" id="mail" required>
-                <span></span>
-                <label>Adresse Mail</label>
-            </div>
-            <div class="txt mdp">
-                <input type="password" name="mdp" id="mdp" required>
-                <span></span>
-                <label>Mot de passe</label>
-            </div>
-            <div class="txt confirm">
-                <input type="password" name="confirm" id="confirm" required>
-                <span></span>
-                <label>Confirmer le mot de passe</label>
-            </div>
-            <div class="btn-connex">
-                <input type="submit" id="btn-connex" value="S'inscrire">
-            </div>
-        </form>
-        <div>
-            Déjà inscrit(e)? <a href="login.html">Se connecter</a>
         </div>
+
+        <div id="partie2" style="display: none;">
+            <form id="verifnum" action="/nouv_compte" method="post">
+                <div class="top">
+                    <div>
+                       <p>Un code de vérification a été envoyé à votre adresse e-mail</p>
+                    </div>
+    
+                    <div>
+                        <h4>Entrer le code ci-dessous:</h4>
+                    </div>
+                </div>
+                <div class="verifnum">
+                    <input type="text" name="" id="" maxlength="1" oninput="prochainInput(1)" required>
+                    <input type="text" name="" id="" maxlength="1" oninput="prochainInput(2)" required>
+                    <input type="text" name="" id="" maxlength="1" oninput="prochainInput(3)" required>
+                    <input type="text" name="" id="" maxlength="1" oninput="prochainInput(4)" required>
+                    <input type="text" name="" id="" maxlength="1" oninput="prochainInput(5)" required>
+                    <input type="text" name="" id="" maxlength="1" oninput="prochainInput(6)" required>
+                </div>
+                <div class="btn-connex">
+                    <input type="submit" id="btn-connex" value="Vérifier">
+                </div>
+            </form>
+            <div>
+                Mail non reçu? <a href="">Renvoyer un code</a>
+            </div>
+        </div>
+
         <div class="alert succes" id="succes" style="display: none;"></div>
         <div class="alert erreur" id="erreur" style="display: none;"></div>
     </div>

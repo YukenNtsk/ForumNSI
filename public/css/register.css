@@ -42,6 +42,7 @@ input {
 }
 
 #btn-connex {
+    font-family: 'Montserrat', sans-serif;
     width: 100%;
     text-decoration: none;
     font-size: 1.25rem;
@@ -151,4 +152,22 @@ a:hover {
     color: #111111;
     border-color: #644242;
     background-color: hsl(0, 48%, 62%);
+}
+
+.top {
+    text-align: center;
+}
+
+.verifnum {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.verifnum input {
+    text-align: center;
+    width: 16.66%;
+    height: 42px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
 }

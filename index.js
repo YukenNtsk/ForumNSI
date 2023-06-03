@@ -126,23 +126,69 @@ app.post('/register', async (req, res) => {
                 }
                 res.json(data);
             } else { 
-                const mdpHash = await bcrypt.hash(req.body.mdp, 8) // Crypte le mot de passe
-                let user = {
-                    email: req.body.mail,
-                    mdp: mdpHash,
-                    nom: req.body.nom
-                }
-                let sql = 'INSERT INTO users SET ?';
-                let query = db.query(sql, user, (err, result) => { // Crée et sauvegarde le nouveau compte dans la database
-                    if (err) throw err;
-                    console.log(result)
-                    var data = {
-                        status: 'succes',
-                        succes: 'Compte créé'
+                let verifnum = Math.random() * 999999;
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'forumnsi@gmail.com',
+                        pass: process.env.MDP_MAIL
                     }
-                    res.json(data);
                 })
+                let html = `
+                    <h1>Veuillez confirmer votre adresse e-mail</h1>
+                    <p>Entrez le numéro suivant sur le site</p>
+                    <h2> ${verifnum} </h2>
+                    <p>Il ne s'agit pas de vous? Vous pouvez ignorer ce mail</p>
+                `
+                const mailOptions = {
+                    from: 'forumnsi@gmail.com',
+                    to: req.body.mail,
+                    subject: `Confirmation de l'Adresse e-mail`,
+                    html: html
+                }
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (err) {
+                        console.log('Erreur Mail')
+                    }
+                    else {
+                        console.log('Mail envoyé')
+                    }
+                })
+                console.log(resultt)
+                var data = {
+                    status: 'succes',
+                    verifnum: verifnum
+                }
+                res.json(data)
+
             }
+        }
+    })
+})
+
+app.post('/nouv_compte', async (req, res) => {
+    const mdpHash = await bcrypt.hash(req.body.mdp, 8) // Crypte le mot de passe
+    let user = {
+        email: req.body.mail,
+        mdp: mdpHash,
+        nom: req.body.nom
+    }
+    let sql = 'INSERT INTO users SET ?';
+    let query = db.query(sql, user, (err, result) => { // Crée et sauvegarde le nouveau compte dans la database
+        if (err) {
+            console.log(err)
+            var data = {
+                status: 'erreur',
+                erreur: 'Une erreur s\'est produite'
+            }
+            res.json(data)
+        } else {
+            console.log(result)
+            var data = {
+                status: 'succes',
+                succes: 'Compte créé'
+            }
+            res.json(data);
         }
     })
 })
