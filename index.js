@@ -126,7 +126,7 @@ app.post('/register', async (req, res) => {
                 }
                 res.json(data);
             } else { 
-                let verifnum = Math.random() * 999999;
+                let verifnum = Math.floor(Math.random() * 1000000);
                 const transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 465,

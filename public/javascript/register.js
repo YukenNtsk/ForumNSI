@@ -30,7 +30,7 @@ form.addEventListener('submit', (event) => {
 })
 
 function prochainInput(nextInput) {
-    const input = document.querySelector(`input:nth-child(${nextInput})`);
+    const input = document.querySelector(`.num:nth-child(${nextInput})`);
 
     if (input && input.value.length === input.maxLength) {
       input.nextElementSibling && input.nextElementSibling.focus();
