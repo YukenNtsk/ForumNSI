@@ -147,14 +147,13 @@ app.post('/register', async (req, res) => {
                     html: html
                 }
                 transporter.sendMail(mailOptions, (error, info) => {
-                    if (err) {
+                    if (error) {
                         console.log('Erreur Mail')
                     }
                     else {
                         console.log('Mail envoyé')
                     }
                 })
-                console.log(resultt)
                 var data = {
                     status: 'succes',
                     verifnum: verifnum
