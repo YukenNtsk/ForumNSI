@@ -40,7 +40,7 @@ function prochainInput(nextInput) {
 const form2 = document.getElementById('verifnum')
 form2.addEventListener('submit', (event) => {
     event.preventDefault()
-    const inputs = document.querySelectorAll('input');
+    const inputs = document.querySelectorAll('.num');
     let code = '';
 
     // Concatenate the input values into a 2FA code
