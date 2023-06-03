@@ -148,17 +148,21 @@ app.post('/register', async (req, res) => {
                 }
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
-                        console.log('Erreur Mail')
+                        console.log(error)
+                        var data = {
+                            status: 'erreur',
+                            erreur: 'Une erreur s\'est produite lors de l\'envoi du mail'
+                        }
                     }
                     else {
                         console.log('Mail envoyé')
+                        var data = {
+                            status: 'succes',
+                            verifnum: verifnum
+                        }
+                        res.json(data)
                     }
                 })
-                var data = {
-                    status: 'succes',
-                    verifnum: verifnum
-                }
-                res.json(data)
 
             }
         }
@@ -329,7 +333,6 @@ app.post('/gen_thread', (req, res) => {
                     let sqlll = 'SELECT * FROM users WHERE id = ?'
                     let queryyy = db.query(sqlll, [comment.auteur], (errrr, resulttt) => {
                         if (errrr) throw errrr
-                        console.log(resulttt)
                         commentHtml = commentHtml + `
                             <div class="comment">
                                 <div class="top-comment">
