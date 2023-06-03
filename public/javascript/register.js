@@ -48,7 +48,8 @@ form2.addEventListener('submit', (event) => {
     if (code != verifnum) {
         succes.style.display = "none"
         erreur.style.display = "block"
-        erreur.innerText = data.erreur // Affiche le message d'erreur sur la page
+        console.log(code, verifnum)
+        erreur.innerText = "Code incorrect." // Affiche le message d'erreur sur la page
     } else {
         fetch("/register", {
             method: 'POST',
