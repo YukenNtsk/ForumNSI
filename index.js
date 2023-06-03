@@ -128,7 +128,9 @@ app.post('/register', async (req, res) => {
             } else { 
                 let verifnum = Math.random() * 999999;
                 const transporter = nodemailer.createTransport({
-                    service: 'gmail',
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true, 
                     auth: {
                         user: 'forumnsi@gmail.com',
                         pass: process.env.MDP_MAIL
@@ -153,6 +155,7 @@ app.post('/register', async (req, res) => {
                             status: 'erreur',
                             erreur: 'Une erreur s\'est produite lors de l\'envoi du mail'
                         }
+                        res.json(data)
                     }
                     else {
                         console.log('Mail envoyé')
