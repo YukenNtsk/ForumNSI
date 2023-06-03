@@ -406,7 +406,7 @@ app.post('/feedback', (req, res) => {
                     }
                 })
                 const mailOptions = {
-                    from: result[0].mail,
+                    from: result[0].email,
                     to: 'forumnsi@gmail.com',
                     subject: `Feedback: ${req.body.titre}`,
                     text: `${req.body.msg}\n de ${result[0].nom} - ${result[0].email}`
