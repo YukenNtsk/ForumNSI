@@ -29,33 +29,16 @@ form.addEventListener('submit', (event) => {
         })
 })
 
-// function prochainInput(nextInput) {
-//     const input = document.querySelector(`.num:nth-child(${nextInput})`);
+function prochainInput(nextInput) {
+    const input = document.querySelector(`.num:nth-child(${nextInput})`);
 
-//     if (input && input.value.length === input.maxLength) {
-//       input.nextElementSibling && input.nextElementSibling.focus();
-//     }
-// }
-
-var inputs = document.querySelectorAll('.num input');
-
-inputs.forEach(function(input, index) {
-  input.addEventListener('keyup', function() {
-    if (input.value.length === input.maxLength) {
-      if (index + 1 < inputs.length) {
-        inputs[index + 1].focus();
-      }
+    if (input && input.value.length === input.maxLength) {
+      input.nextElementSibling && input.nextElementSibling.focus();
+    } else if (input && input.value.length === 0) {
+        input.previousElementSibling && input.previousElementSibling.focus();
     }
-  });
+}
 
-  input.addEventListener('keydown', function(event) {
-    if (event.key === 'Backspace' && input.value.length === 0) {
-      if (index - 1 >= 0) {
-        inputs[index - 1].focus();
-      }
-    }
-  });
-});
 
 const form2 = document.getElementById('verifnum')
 form2.addEventListener('submit', (event) => {
