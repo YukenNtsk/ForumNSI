@@ -43,6 +43,7 @@ inputs.forEach(function(input, index) {
   input.addEventListener('keydown', function(event) {
     if (event.key === 'Backspace' && input.value.length === 0) {
       if (index - 1 >= 0) {
+        inputs[index - 1].value = ''
         inputs[index - 1].focus();
       }
     }
