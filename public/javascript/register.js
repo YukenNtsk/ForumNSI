@@ -32,10 +32,14 @@ form.addEventListener('submit', (event) => {
 function prochainInput(nextInput) {
     const input = document.querySelector(`.num:nth-child(${nextInput})`);
 
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Backspace" && input && input.value.length === 0) {
+            input.previousElementSibling && input.previousElementSibling.focus();
+        }
+    });
+
     if (input && input.value.length === input.maxLength) {
       input.nextElementSibling && input.nextElementSibling.focus();
-    } else if (input && input.value.length === 0) {
-        input.previousElementSibling && input.previousElementSibling.focus();
     }
 }
 
